@@ -22,7 +22,7 @@ public class NavigationDrawerFragment extends Fragment {
         return inflater.inflate(R.layout.navigation_drawer_frag_layout, container, false);
     }
 
-    public void setUp(DrawerLayout drawerLayout, Toolbar toolBar) {
+    public void setUp(DrawerLayout drawerLayout, final Toolbar toolBar) {
         mDrawerLayout = drawerLayout;
        //1.Create a new Instance of ActionBarDrawerToggle
         mDrawerToggle = new ActionBarDrawerToggle(getActivity(),drawerLayout,toolBar,R.string.drawer_open,R.string.drawer_close){
@@ -35,8 +35,28 @@ public class NavigationDrawerFragment extends Fragment {
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
             }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                if(slideOffset < 0.6) {
+                    toolBar.setAlpha(1-slideOffset);
+                //if we remove super hamburger animation is not there
+                    //This onDrawSlide is for toolBar animation to alpha
+                }
+
+            }
         };
         //2.Set the listener to the drawerLayout as drawerToggle overrided methods
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        mDrawerLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mDrawerToggle.syncState();
+            }
+        });
     }
+
+
 }
